@@ -1,0 +1,104 @@
+<div class="layui-body">
+	<div class="box-title">
+		{$boxTitle}
+	</div>
+	<form class="layui-form  layui-form-pane" action="{:url('admin/auth/newauthadmin_out')}" method="post">
+		<input type="hidden" name="id" value="{$message.id}">
+		<div class="layui-form-item">
+		    <label class="layui-form-label">权限组名称</label>
+			    <div class="layui-input-inline">
+			      <input type="text" name="authname" required lay-verify="required" placeholder="请输入权限组名称" autocomplete="off" class="layui-input" value="{$message.authname}">
+			    </div>
+			    <div class="layui-form-mid layui-word-aux">权限组名称</div>
+		  </div>
+		  <!-- 权限 -->
+		  <div class="layui-form-item">
+		  	 <label class="layui-form-label">选择权限</label>
+		  	  	<div class="layui-input-block">
+		  	  		{volist name="controller" id="app"}
+		  	  			{if condition = "$app.app == 'index' || $app.app == 'my' || $app.app == 'other'"}
+		  	  			<input type="checkbox" name="auth" title="{$app.appname}" lay-skin="primary" checked  id="authid{$app.id}" value="{$app.id}">
+		  	  			{else /}
+		  	  			<input type="checkbox" name="auth" title="{$app.appname}" lay-skin="primary" id="authid{$app.id}" value="{$app.id}">
+		  	  			{/if}
+		  	  		{/volist}
+		  	  	</div>
+		  </div>
+		   <div class="layui-form-item">
+		   		 <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+      			 <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+		   </div>
+	</form>
+	<script type="text/javascript">
+		layui.use('form', function(){
+		  var form 	= 	layui.form;
+		  var auth 	=	new Array();
+		  auths    	=	"{$message.auth}";
+		  var id 	=	"{$message.id}";
+
+		  if(id != ''){
+		  	  
+	  		  if(auths.indexOf(',') > 0){
+			  	  auth 	=	auths.split(",");
+			  }else{
+			  	 auth[0] 	=	auths;
+			  }
+
+			  $("input[type='checkbox']").attr('checked',false);
+
+			  var authlen 	=	auth.length;
+		  	  if(authlen >= 2){
+		  	  	for(v = 0;v<=auth.length ; v++){
+				  	if(auth[v] != 0 || auth[v] != '-1'){
+				  		$('#authid' + auth[v]).attr('checked',true);
+				  	}
+				  }
+		  	  }else{
+		  	  	  if(auth[0] == 0){
+				  	$("input:checkbox").attr('checked',false);
+				  }
+				  if(auth[0] == -1){
+				  	$("input[type='checkbox']").attr('checked',true);
+				  }
+		  	  }
+
+			  
+		  }
+		  
+
+		  form.render();
+		  
+		  //监听提交
+		  form.on('submit(formDemo)', function(data){
+		    var formfie 		=	data.field;
+		    var action 			=	data.form.action;
+		    var method 			=	data.form.method;
+
+		    if($("input[name='auth']:checked").length == 0 && id != 0){
+		    	msgAlert(0,'请至少选择一项',0);
+		    	return false;
+		    }
+
+		    var standards 		=	'';
+		    $("input:checkbox[name='auth']:checked").each(function() { 
+			    standards += $(this).val() + ',';
+			});
+
+		    standards 			= 	standards.substr(0,standards.length -1);
+
+		    formfie['auth'] 	=	standards;
+
+		    $.ajax({
+		    	url:action,
+		    	type:method,
+		    	data:formfie,
+		    	success:function(da){
+		    		msgAlert(da['code'],da['msg'],da['code']);
+		    	}
+		    });
+		    
+		    return false;
+		  });
+		});
+	</script>
+</div>

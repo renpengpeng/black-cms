@@ -1,0 +1,77 @@
+<div class="layui-body">
+	<div class="box-title">
+		后台控制器名称
+		<span style="float: right;">
+			<button class="layui-btn" onclick="box_load('{:url("admin/auth/newadminappname")}');">
+			  <i class="layui-icon">&#xe608;</i> 添加
+			</button>
+		</span>
+	</div>
+	<table class="layui-table tableCenter" style="text-align: center;">
+		<thead>
+			<tr>
+				<th width="50">ID</th>
+				<th width="150">控制器</th>
+				<th width="150">控制器名称</th>
+				<th width="150">操作</th>
+			</tr>
+		</thead>
+		{volist name="listData" id="list"}
+		<tr>
+			<td>{$list.id}</td>
+			<td>{$list.app}</td>
+			<td>{$list.appname}</td>
+			<td>
+				<div class="layui-btn-group">
+				  <button class="layui-btn layui-btn-xs" title="编辑" onclick="edit({$list.id});">
+				  	<i class="layui-icon" style="font-size:12px;">&#xe642;</i>
+				  </button>
+				  <button class="layui-btn layui-btn-xs layui-btn-danger" title="删除" onclick="del({$list.id});">
+				  	<i class="layui-icon">&#xe640;</i>
+				  </button>
+				</div>
+			</td>
+		</tr>
+		{/volist}
+	</table>
+	{$pageData->render()}
+	<!-- 提示 -->
+	<script type="text/javascript">
+		layer.msg('官方提示：不懂的人不要轻易修改，否则后台管理权限功能会混乱！');
+
+		// 编辑
+		function edit(id){
+			var url 		=	"{:url('admin/auth/newadminappname')}";
+			var box_url 	=	url + '/id/' + id;
+
+			$.ajax({
+				url:url,
+				type:'get',
+				data:{'id':id},
+				success:function(data){
+					var code = data['code'];
+					console.log(code);
+					if(code == undefined){
+						box_load(box_url);
+					}else{
+						msgAlert(data['code'],data['msg'],data['code']);
+					}
+				}
+			});
+		}
+
+		// 删除
+		function del(id){
+			var url 	=	"{:url('admin/auth/adminappname_del')}";
+
+			$.ajax({
+				url:url,
+				type:'get',
+				data:{'id':id},
+				success:function(data){
+					msgAlert(data['code'],data['msg'],data['code']);
+				}
+			});
+		}
+	</script>
+</div>

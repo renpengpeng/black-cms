@@ -1,0 +1,71 @@
+<div class="layui-body">
+	<div class="box-title">
+		{$boxTitle}
+		<span style="float: right;">
+			<button class="layui-btn" onclick="box_load('{:url("admin/auth/newauthadmin")}');">
+			  <i class="layui-icon">&#xe608;</i> 添加
+			</button>
+		</span>
+	</div>
+	<table class="layui-table" style="text-align: center;">
+		<thead>
+			<tr>
+				<th width="50" style="text-align: center;">ID</th>
+				<th width="100" style="text-align: center;">权限名称</th>
+				<th width="50" style="text-align: center;">允许操作/访问的栏目</th>
+				<th width="50" style="text-align: center;">添加时间</th>
+				<th width="100" style="text-align: center;">管理</th>
+			</tr>
+		</thead>
+		{volist name="listData" id="list"}
+		<tr>
+			<td>{$list.id}</td>
+			<td>{$list.authname}</td>
+			<td>{$list.authnames}</td>
+			<td>{$list.addtime|date="Y-m-d H:i:s",###}</td>
+			<td>
+				 <button class="layui-btn layui-btn-xs" title="编辑" onclick="edit('{:url("admin/auth/newauthadmin",["id"=>$list.id])}');">
+				  	<i class="layui-icon" style="font-size:12px;">&#xe642;</i>
+				  </button>
+				  <button class="layui-btn layui-btn-xs layui-btn-danger" title="删除" onclick="del({$list.id});">
+				  	<i class="layui-icon">&#xe640;</i>
+				  </button>
+			</td>
+		</tr>
+		{/volist}
+	</table>
+	<script type="text/javascript">
+		/*
+		  * 编辑
+		*/
+		function edit(url){
+		  // 访问  如果没有错误 则进入
+		  $.ajax({
+		    url:url,
+		    success:function(data){
+		      if(data['code'] == 0){
+		        msgAlert(0,data['msg'],0);
+		        return false;
+		      }else{
+		        box_load(url);
+		      }
+		    }
+		  });
+		}
+		/*
+			*	删除
+		*/
+		function del(id){
+			var url 	=	"{:url('admin/auth/delauthadmin')}";
+
+			$.ajax({
+				url:url,
+				type:'get',
+				data:{'id':id},
+				success:function(data){
+					msgAlert(data['code'],data['msg'],data['code']);
+				}
+			});
+		}
+	</script>
+</div>

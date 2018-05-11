@@ -1,0 +1,282 @@
+<div class="layui-body">
+	<div class="box-title">
+	  分类管理
+	</div>
+	<div class="box-box">
+		<div class="layui-row">
+			<!-- 分类预览 -->
+			<div class="layui-col-md5 cate-look">
+				<div class="cate-look-title">分类预览</div>
+				<div class="cate-look-content">
+					<div class="cate-look-content-title">
+						<ul>
+							<li>
+								<input type="checkbox" name="checkCate" id="checkCate" value="">
+							</li>
+							<li>
+								<button class="layui-btn layui-btn-sm layui-btn-danger" onclick="del(this);">删除</button>
+							</li>
+							<li>
+								<button class="layui-btn layui-btn-sm layui-btn-default" onclick="edit();">编辑</button>
+							</li>
+						</ul>
+					</div>
+					{$allCate}
+				</div>
+			</div>
+			<!-- 分类编辑 -->
+			<div class="layui-col-md6 cate-edit">
+				<div class="cate-edit-title">分类添加/编辑</div>
+				<form class="layui-form layui-form-pane" method="post" action='{:url("admin/cate/newcate")}' id="cateForms">
+					<!-- 隐藏域 id -->
+					<input type="hidden" name="id" value="">
+					<!-- 父分类 -->
+					<div class="layui-form-item">
+				    	<label class="layui-form-label">父分类</label>
+				    	<div class="layui-input-block">
+					      	<select name="pid">
+						        <option value="">不选择 作为主分类</option>
+						        {$allCateOption}
+					     	 </select>
+				    	</div>
+				   </div>
+					<!-- 标题 -->
+ 					 <div class="layui-form-item">
+    					<label class="layui-form-label">标题</label>
+    					<div class="layui-input-block">
+      						<input type="text" name="title" required  lay-verify="required" placeholder="(必填)请输入标题" autocomplete="off" class="layui-input">
+    					</div>
+  					</div>
+
+  					<div class="layui-form-item">
+    					<label class="layui-form-label">标题图片</label>
+    					<div class="layui-input-block">
+      						<input type="text" name="titlepic" placeholder="(可选)点击上传图片" autocomplete="off" class="layui-input" style="cursor: pointer;">
+      						<input type="file" name="blackFile" style="position: absolute;top:0px;height: 100%;width: 100%;opacity: 0;cursor: pointer;" title="点击选择文件" id="blackFile" >
+    					</div>
+  					</div>
+  					<!-- 关键词 -->
+  					<div class="layui-form-item">
+    					<label class="layui-form-label">关键词</label>
+    					<div class="layui-input-block">
+      						<input type="text" name="keywords" placeholder="(可选)请输入关键词 英文逗号分隔" autocomplete="off" class="layui-input">
+    					</div>
+  					</div>
+  					<!-- 描述 -->
+  					 <div class="layui-form-item layui-form-text">
+					    <label class="layui-form-label">描述</label>
+					    <div class="layui-input-block">
+					      <textarea name="description" placeholder="(可选)分类SEO描述" class="layui-textarea"></textarea>
+					    </div>
+					 </div>
+					 <!-- 使用模板 -->
+					 <div class="layui-form-item">
+    					<label class="layui-form-label" title="可自定义分类模板 路径根据访问端模板路径来选择">使用模板</label>
+    					<div class="layui-input-block">
+      						<input type="text" name="template" placeholder="(可选)   例:cate.html" autocomplete="off" class="layui-input">
+    					</div>
+  					</div>
+  					<!-- 分类显示数量 -->
+  					<div class="layui-form-item">
+    					<label class="layui-form-label" title="分类列表每页显示的信息数量">
+    						列表数量
+    					</label>
+    					<div class="layui-input-block">
+      						<input type="text" name="list_num" placeholder="(可选) 默认为10" autocomplete="off" class="layui-input">
+    					</div>
+  					</div>
+  					<!-- 提交 -->
+  					<div class="layui-form-item">
+					    <div class="layui-input-block">
+					      <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+					      <button type="reset" class="layui-btn layui-btn-danger">重置</button>
+					    </div>
+					</div>
+  				</form>
+				</div>
+		</div>
+	</div>
+	
+	<script type="text/javascript">
+	// 修饰表单
+	layui.use('form', function(){
+ 		 var form 	= layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
+		  form.render();
+		  //监听提交
+		  form.on('submit(formDemo)', function(data){
+
+		   var fid 		=	data.field;
+		   var url 		=	data.form.action;
+		   var method 	=	data.form.method;
+		   $.ajax({
+			   	url:url,
+			   	type:method,
+			   	data:fid,
+			   	success:function(data){
+			   		msgAlert(data['code'],data['msg'],data['code']);
+			   	}
+
+		   });
+
+		    return false;
+		  });
+	});  
+	// 选中全部分类
+	$(document).delegate('input[name="checkCate"]','click',function(){
+		var status = $("input[name='checkCate']").is(':checked');
+		$(document).find('input[type="checkbox"]').attr('checked',status);
+	});
+	// 删除分类
+	function del(e){
+		// 获取选中的checkbox数量
+		var check 	=	$("input:checked");
+		var nums 	=	check.length;
+		var id 		= 	'';
+
+		// 如果没有选中
+		if(nums <= 0){
+			msgAlert(0,'没有选中项呢',0);return false;
+		}
+
+		// 如果等于1
+		if(nums == 1){
+			var vals = $("input:checked").val();
+
+			if(vals.length >= 1){
+				id 	=	vals;
+			}else{
+				msgAlert(0,'选中项不能为空呢',0);return false;
+			}
+		}
+
+		// 如果大于1
+		if(nums > 1){
+			var len 	=	0;
+			// 遍历删除空项再次统计数量
+			for(i=0;i<=nums-1;i++){
+				var vall = $("input:checked").eq(i).val();
+
+				if(vall.length >= 1){
+					id += ','+vall;
+				}
+			}
+		}
+
+		// 如果id第一位为 ',' 处理
+		var oneStr 	=	id.substr(0,1);
+
+		if(oneStr == ','){
+			id 	=	id.substr(1);
+		}
+
+		// 生成提交地址
+		var goUrl 	=	"{:url('admin/cate/del')}";
+
+		$.ajax({
+			url:goUrl,
+			type:'post',
+			data:{id:id},
+			success:function(data){
+				msgAlert(data['code'],data['msg'],data['code']);
+			}
+		});
+	}
+
+	// 上传图片
+	$(document).delegate('input[name="blackFile"]','change',function(){
+		var url 			=	"{:url('index/upload/upload')}";
+		var files 			=	$("#blackFile").prop('files');
+
+		if(files.length <= 0){
+			msgAlert(0,'没有选择文件哦！',0);
+			return false;
+		}
+
+		if(files.length > 1){
+			msgAlert(0,'不能上传多个文件',0);
+			return false;
+		}	
+
+		var fileProject			=	 new FormData();
+		fileProject.append("blackFile",files[0]);
+
+		$(this).replaceWith('<input type="file" name="blackFile" style="position: absolute;top:0px;height: 100%;width: 100%;opacity: 0;cursor: pointer;" title="点击选择文件" id="blackFile" >');
+
+
+		$.ajax({
+			url:url,
+			type:'post',
+			data:fileProject,
+			processData : false,
+			contentType : false,
+			dataType: "json",
+			success:function(data){
+				var derrno 	=	data['errno'];
+				var ddata 	=	data['data'];
+
+				if(derrno == 0){
+					msgAlert(1,'上传图片成功',0);
+					$('input[name="titlepic"]').val(ddata[0]);
+				}else{
+					msgAlert(0,'上传图片失败',0);
+				}
+			}
+		});
+	});
+
+	/*
+		*	分类编辑
+	*/
+	function edit(){
+		// 获取选中的checkbox数量
+		var check 	=	$("input:checked");
+		var nums 	=	check.length;
+
+		// 生成action url
+		var editURL 	=	"{:url('admin/cate/edit')}";
+
+		// 获取分类信息url
+		var getCateURL 	=	"{:url('admin/cate/get_one')}";
+
+		if(nums 	!= 	1){
+			msgAlert(0,'请选择一个进行编辑',0);
+			return false;
+		}
+
+		var vals 	=	$("input:checked").val();
+
+		if(vals.length < 1){
+			msgAlert(0,'请选择分类',0);
+			return false;
+		}
+
+		// 获取分类信息
+		$.ajax({
+			url:getCateURL,
+			data:{'id':vals},
+			type:'post',
+			success:function(data){
+				var code 	= 	data['code'];
+				var msg 	=	data['msg'];
+				if(code == 0){
+					msgAlert(code,msg,code);
+				}else{
+					msgAlert(1,'请在右边进行编辑',0);
+					for(var i in msg){
+						if(i != 'description'){
+							$('input[name="' + i +'"]').val(msg[i]);
+						}else{
+							$('textarea[name="' + i +'"]').val(msg[i]);
+						}
+					}
+					$('#cateForms').attr('action',editURL);
+				}
+
+			}
+		});
+		
+
+
+	}
+	</script>
+</div>

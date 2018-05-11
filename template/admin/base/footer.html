@@ -1,0 +1,46 @@
+  
+  <div class="layui-footer">
+    <!-- 底部固定区域 -->
+    © black-cms.cn 后台管理系统 & ThinkPHP5.0驱动
+  </div>
+</div>
+
+<script>
+//引用layui菜单组件
+layui.use('element', function(){
+  var element = layui.element;
+});
+
+// 默认打开控制面板
+$(function(){
+	consoleurl 	= '{:url('admin/index/console')}';
+
+	$.cookie('box_url',consoleurl);
+	
+	box_load(consoleurl);
+
+	var adminstyle 	=	"{$Think.session.login_data.style}";
+	if(adminstyle.length > 2){
+		changeBgColor(adminstyle);
+	}
+})
+
+// 控制分页链接
+$(document).delegate('a','mouseover',function(e){
+	$(this).attr('readonly',true);
+	var href 	=	$(this).attr('href');
+	 var zd       = /(\/+[a-zA-Z0-9]+)+\?[a-zA-Z0-9]+\=[a-zA-Z0-9]+/;
+	 if(zd.test(href)){
+	 	var hrefs	=	"box_load('" + href +"')";
+	 	$(this).attr({
+	 		'href':'javascript:;',
+	 		'onclick':hrefs,
+	 		'readonly':false
+	 	});
+	 }
+});
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<div class="layui-body">
+	<div class="box-title">
+		{$boxTitle}
+	</div>
+	<form class="layui-form layui-form-pane" action="{:url('admin/announce/newannounce_out')}" method="post">
+		<div class="layui-row layui-col-space30">
+			<div class="layui-col-md9">
+				<!-- 隐藏域ID -->
+				<input type="hidden" name="id" value="{$message.id}">
+				<!-- 标题 -->
+				<div class="layui-form-item">
+					<label class="layui-form-label">公告标题</label>
+					<div class="layui-input-block">
+      					<input type="text" name="title" required  lay-verify="required" placeholder="(必选) 页面标题" autocomplete="off" class="layui-input" value="{$message.title}">
+   					 </div>
+				</div>
+				<!-- 标题图片 -->
+			    <div class="layui-form-item">
+			        <label class="layui-form-label">标题图片</label>
+			        <div class="layui-input-block">
+			          <input type="text" name="titlepic" placeholder="(可选) 点击选择标题图片" autocomplete="off" class="layui-input" value="{$message.titlepic}" readonly="readonly">
+			          <input type="file" name="blackFile" style="position: absolute;top:0;left: 0;width: 100%;height: 100%;opacity: 0;" id="blackFile">
+			        </div>
+			    </div>
+				<!-- 关键词 -->
+				<div class="layui-form-item">
+					<label class="layui-form-label">关键词</label>
+					<div class="layui-input-block">
+      					<input type="text" name="keywords" placeholder="(可选) 页面SEO关键词" autocomplete="off" class="layui-input" value="{$message.keywords}">
+   					 </div>
+				</div>
+				<!-- 描述 -->
+				<div class="layui-form-item layui-form-text">
+				    <label class="layui-form-label">描述</label>
+				    <div class="layui-input-block">
+				      	<textarea name="description" placeholder="(可选) 页面SEO描述" class="layui-textarea">{$message.description}</textarea>
+				    </div>
+				 </div>
+				 <!-- 页面内容 -->
+				 <div class="layui-form-item layui-form-text">
+				    <label class="layui-form-label">公告正文</label>
+				    <div class="layui-input-block">
+				      	 <div id="content"></div>
+						 <!-- 隐藏页面内容 -->
+						 <div class="content">{$message.content}</div>
+				    </div>
+				 </div>
+			</div>
+			<div class="layui-col-md3">
+				<!-- 公告密码 -->
+				<div class="layui-form-item">
+				    <label class="layui-form-label">访问密码</label>
+				    <div class="layui-input-inline">
+				      	 <input type="text" name="password" placeholder="(可选) 公告访问密码" autocomplete="off" class="layui-input" value="{$message.password}">
+				    </div>
+				 </div>
+				 <!-- 别名 -->
+				 <div class="layui-form-item">
+				    <label class="layui-form-label">别名</label>
+				    <div class="layui-input-inline">
+				      	 <input type="text" name="alias" placeholder="(可选) 公告别名" autocomplete="off" class="layui-input" value="{$message.password}">
+				    </div>
+				 </div>
+				 <!-- 开始时间 -->
+				 <div class="layui-form-item">
+				    <label class="layui-form-label">开始时间</label>
+				    <div class="layui-input-inline">
+				      	 <input type="text" name="begintime" required layer="required" placeholder="(必选) 公告开始时间" autocomplete="off" class="layui-input" value="{$message.begintime|date='Y-m-d H:i:s',###}" id="begintime">
+				    </div>
+				 </div>
+				 <!-- 结束时间 -->
+				 <div class="layui-form-item">
+				    <label class="layui-form-label">开始时间</label>
+				    <div class="layui-input-inline">
+				      	 <input type="text" name="endtime" required layer="required" placeholder="(必选) 公告结束时间" autocomplete="off" class="layui-input" value="{$message.endtime|date='Y-m-d H:i:s',###}" id="endtime">
+				    </div>
+				 </div>
+				 <!-- 文章状态 -->
+				 <div class="layui-form-item">
+                  	<label class="layui-form-label">文章状态</label>
+                  	<div class="layui-input-block">
+	                    <input type="radio" name="status" value="1" title="正常" checked>
+	                    <input type="radio" name="status" value="0" title="待审核" >
+	                    <input type="radio" name="status" value="2" title="草稿">
+	                    <input type="radio" name="status" value="3" title="回收站">
+                	</div>
+              	</div>
+              	<!-- 按钮 -->
+				 <div class="layui-form-item">
+	                <div class="layui-input-block">
+		                  <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+		                  <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+	                </div>
+              	</div>
+			</div>
+		</div>
+	</form>
+
+	<script>
+	// 初始化 wangedit
+	  var edit        =   window.wangEditor;
+	  var editor      =   new edit('#content');
+	  var uploadURL   =   "{:url('index/upload/upload')}";
+	  // 增加上传图片配置
+	  editor.customConfig.uploadImgServer = uploadURL;
+	  editor.create();
+	  // 设置文章内容
+	  content         = $('.content').html();
+	  editor.txt.html(content);
+
+	//Demo
+	layui.use('form', function(){
+	  var form = layui.form;
+
+	  // 日期选择
+	  layui.use('laydate', function(){
+		  var laydate = layui.laydate;
+		  
+		  //执行一个laydate实例
+		  laydate.render({
+		  	elem:'#begintime',
+		  	format:'yyyy-MM-dd HH:mm:ss',
+		  	type:'datetime'
+		  });
+		  laydate.render({
+		  	elem:'#endtime',
+		  	format:'yyyy-MM-dd HH:mm:ss',
+		  	type:'datetime'
+		  });
+	  });
+	  form.render();
+	  
+	  //监听提交
+	  form.on('submit(formDemo)', function(data){
+	   	 	var fie 		=	data.field;
+	   	 	var action 		=	data.form.action;
+	   	 	var method 		=	data.form.method;
+	   	 	var begintime 	=	$('#begintime').val();
+	   	 	var endtime 	=	$('#endtime').val();
+	   	 	if(begintime.length < 3 || endtime.length < 3){
+	   	 		msgAlert(0,'开始日期或者截止日期不能为空',0);
+	   	 		return false;
+	   	 	}
+
+	   	 	$.ajax({
+	   	 		url:action,
+	   	 		type:method,
+	   	 		data:fie,
+	   	 		success:function(da){
+	   	 			msgAlert(da['code'],da['msg'],da['code']);
+	   	 		}
+	   	 	});
+	    	return false;
+	  });
+	});
+
+	// 编辑
+	function edit(url){
+		$.ajax({
+			url:url,
+			success:function(data){
+				if(data['code'] == 0){
+					msgAlert(0,data['msg'],0);
+					return false;
+				}else{
+					box_load(url);
+				}
+			}
+		});
+	}
+
+	// 上传图片
+  $(document).delegate('input[name="blackFile"]','change',function(){
+    var url       = "{:url('index/upload/upload')}";
+    var files       = $("#blackFile").prop('files');
+
+    if(files.length <= 0){
+      msgAlert(0,'没有选择文件哦！',0);
+      return false;
+    }
+
+    if(files.length > 1){
+      msgAlert(0,'不能上传多个文件',0);
+      return false;
+    } 
+
+    var fileProject     =  new FormData();
+    fileProject.append("blackFile",files[0]);
+
+    $(this).replaceWith('<input type="file" name="blackFile" style="position: absolute;top:0px;height: 100%;width: 100%;opacity: 0;cursor: pointer;" title="点击选择文件" id="blackFile" >');
+
+
+    $.ajax({
+      url:url,
+      type:'post',
+      data:fileProject,
+      processData : false,
+      contentType : false,
+      dataType: "json",
+      success:function(data){
+        var derrno  = data['errno'];
+        var ddata   = data['data'];
+
+        if(derrno == 0){
+          msgAlert(1,'上传图片成功',0);
+          $('input[name="titlepic"]').val(ddata[0]);
+        }else{
+          msgAlert(0,'上传图片失败',0);
+        }
+      }
+    });
+  });
+
+  
+</script>
+</div>

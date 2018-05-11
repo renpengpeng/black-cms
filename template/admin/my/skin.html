@@ -1,0 +1,43 @@
+<div class="layui-body">
+	<style type="text/css">
+		.skin div{height: 70px;}
+	</style>
+	<div class="box-title">
+		后台管理风格设置
+	</div>
+	<div class="layui-row skin">
+		<div class="layui-col-md3 layui-bg-red"></div>
+		<div class="layui-col-md3 layui-bg-orange"></div>
+		<div class="layui-col-md3 layui-bg-green"></div>
+		<div class="layui-col-md3 layui-bg-cyan"></div>
+		<div class="layui-col-md3 layui-bg-blue"></div>
+		<div class="layui-col-md3 layui-bg-black"></div>
+		<div class="layui-col-md3 layui-bg-gray"></div>
+		<div class="layui-col-md3" style="background: #5FB878;"></div>
+	</div>
+
+	<script type="text/javascript">
+		$(document).delegate('.skin div','click',function(){
+			var index 	=	$('.skin div').index(this);
+			var bgcolor =	$('.skin div').eq(index).css('background-color');
+			var url 	=	"{:url('admin/my/skin_change')}";
+
+			// 请求更换
+			$.ajax({
+				url:url,
+				data:{'bgcolor':bgcolor},
+				success:function(data){
+					var code 	=	data['code'];
+
+					if(code == 1){
+						changeBgColor(bgcolor);
+						$.cookie('admin_style',bgcolor);
+					}else{
+						msgAlert(0,'修改失败',0);
+					}
+				}
+			});
+		});
+	</script>
+</div>
+	

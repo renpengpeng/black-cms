@@ -1,0 +1,203 @@
+<div class="layui-body">
+	<div class="box-title">
+	  所有文章-({$boxTitle})
+	</div>
+	<!-- 选中项操作 -->
+	<div class="select-box">
+		<button class="layui-btn layui-btn-sm layui-btn-danger" onclick="batch('del');">删除</button>
+		<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="batch('status');">取消审核</button>
+		<button class="layui-btn layui-btn-sm" onclick="batch('recy');">移动到回收站</button>
+		<button class="layui-btn layui-btn-sm layui-btn-warm" onclick="batch('normal');">恢复到正常</button>
+		<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="batch('draft');">转为草稿</button>
+		&nbsp;&nbsp;|
+		<button class="layui-btn layui-btn-sm layui-btn-primary where" onclick="articleStatus(0);">未审核</button>
+		<button class="layui-btn layui-btn-sm layui-btn-primary where" onclick="articleStatus(1);">已发布</button>
+		<button class="layui-btn layui-btn-sm layui-btn-primary where" onclick="articleStatus(2);">草稿</button>
+		<button class="layui-btn layui-btn-sm layui-btn-primary where" onclick="articleStatus(3);">回收站</button>
+		<div class="layui-col-md3" style="float: right;height: 30px;">
+			<!-- <div class="layui-input-inline"> -->
+			<input type="text" name="search" class="layui-input layui-input" placeholder="搜索" required style="width: 70%;float: left;">
+			<!-- </div> -->
+			<button class="layui-btn layui-btn-danger" id="artsearch" style="">搜索</button>
+		</div>
+	</div>
+	<table class="layui-table" style="text-align: center;">
+		<thead>
+			<tr lay-skin="line" style="text-align: center;">
+				<th width="10"><input type="checkbox" name="" lay-skin="primary" id="checkboxId"></th>
+				<th width="40" style="text-align: center;">ID</th>
+				<th width="60" style="overflow: hidden;">标题图片</th>
+				<th style="text-align: center;min-width: 50%;">标题</th>
+				<th width="150" style="text-align: center;">分类</th>
+				<th width="50" style="text-align: center;">阅读量</th>
+				<th width="50" style="text-align: center;">状态</th>
+				<th width="50" style="text-align: center;">密码</th>
+				<th width="100" style="text-align: center;">操作</th>
+			</tr>
+		</thead>
+		{volist name="listData" id="list"}
+		<tr>
+			<td>
+				<input type="checkbox" name="{$list.id}" lay-skin="primary" value="{$list.id}">
+			</td>
+			<td>{$list.id}</td>
+			<td>
+				{if $list.titlepic neq null}
+				<img src="{$list.titlepic}" width="50" height="50">
+				{else /}
+				<img src="/static/admin/img/notitlepic.png" width="50" height="50">
+				{/if}
+			</td>
+			<td>{$list.title}</td>
+			<td>{$list.catename}</td>
+			<td>{$list.view}</td>
+			<td>
+				{if $list.status eq 0}
+				未审核
+				{elseif $list.status eq 1}
+				正常
+				{elseif $list.status eq 2}
+				草稿
+				{elseif $list.status eq 3}
+				回收站
+				{else /}
+				未知
+				{/if}
+			</td>
+			<td>
+				{if $list.password neq null}
+					<img src="/static/admin/img/pagelockno.png" width="20" height="20">
+				{else /}
+					<img src="/static/admin/img/pagelockyes.png" width="20" height="20">
+				{/if}
+			</td>
+			<td>
+				<div class="layui-btn-group">
+				  <button class="layui-btn layui-btn-xs" title="编辑" onclick="edit('{:url("admin/article/newarticle",["id"=>$list.id])}');">
+				  	<i class="layui-icon" style="font-size:12px;">&#xe642;</i>
+				  </button>
+				  <button class="layui-btn layui-btn-xs layui-btn-danger" title="删除" onclick="del({$list.id});">
+				  	<i class="layui-icon">&#xe640;</i>
+				  </button>
+				  <button class="layui-btn layui-btn-xs layui-btn-normal" title="预览" onclick="look('dd')}');">
+				  	<i class="layui-icon">&#xe63b;</i>
+				  </button>
+				</div>
+			</td>
+		</tr>
+		{/volist}
+	</table>
+{$pageData->render()}
+<script type="text/javascript">
+	var statu = "{$type}";
+	$('.where').eq(statu).addClass('borders');
+	// 文章状态
+	function articleStatus(e){
+		var soft = '';
+		var urls 	=	"{:url('admin/article/index')}" + '?type=' + e ;
+		box_load(urls);
+	}
+	// 文章批量操作
+		// del 		->  删除
+		// recy 	->	回收站
+		// status 	->	取消审核
+	function batch(type){
+		// 设置当前url
+		var	nowUrl 	=	"{:url('admin/article/index')}"; 
+
+		// 定义更改链接
+		var urls = "{:url('admin/article/change')}";
+
+		// 获取选中的checkbox
+		var all = $(document).find('input:checked');
+		var len = all.length;
+
+		// 判断不能不选择
+		if(len <= 0){
+			msgAlert(0,'你就不能选一项嘛！',0);
+			return false;
+		}
+
+		// 判断如果选择为1 如果内容为on 则不向下执行
+		if(len == 1){
+			var vals = $(document).find('input:checked').val();
+			if(vals == 'on'){
+				msgAlert(0,'下面还没选择呢！',0);
+				return false;
+			}
+		}
+
+		// 遍历得到值
+		if(len >= 2){
+			// 遍历得到value
+			var ids = '';
+			for (var i = 0; i < len; i++) {
+				var chek = $(document).find('input:checked').eq(i).val();
+				if(chek != 'on'){
+					ids += ','+chek;
+				}
+				
+			}
+			ids 	=	ids.substr(1,);
+		}else{
+			ids 	=	$(document).find('input:checked').not('#checkboxId').val();
+		}
+		
+		// 开始ajax访问
+		$.ajax({
+			url:urls,
+			traditional :true, 
+			type:'post',
+			data:{id:ids,type:type},
+			success:function(data){
+				msgAlert(data['code'],data['msg'],data['code'],nowUrl);
+			}
+		});
+	}
+	/*
+	  * 编辑
+	*/
+	function edit(url){
+	  // 访问  如果没有错误 则进入
+	  $.ajax({
+	    url:url,
+	    success:function(data){
+	      if(data['code'] == 0){
+	        msgAlert(0,data['msg'],0);
+	        return false;
+	      }else{
+	        box_load(url);
+	      }
+	    }
+	  });
+	}
+	/*
+		*	文章搜索
+	*/
+	$(document).delegate('#artsearch','click',function(){
+		// 获取名字
+		var vals 	=	$('input[name="search"]').val();
+		// 判断长度
+		if(vals == '' || vals.length < 2){
+			msgAlert(0,'搜索栏请输入内容',0);
+			return false;
+		}
+		// 定义请求链接
+		var ajaxURL 	=	"{:url('admin/article/index')}?type=search&wd="+vals;
+		box_load(ajaxURL);
+	})
+	// 删除
+	function del(id){
+		var url 	=	"{:url('admin/article/change')}";
+
+		$.ajax({
+			url:url,
+			data:{'id':id,'type':'del'},
+			type:'post',
+			success:function(data){
+				msgAlert(data['code'],data['msg'],data['code']);
+			}
+		});
+	}
+</script>
+</div>

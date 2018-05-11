@@ -1,0 +1,88 @@
+<div class="layui-body">
+	<div class="box-title">
+		管理员列表
+	</div>
+	<table class="layui-table tableCenter" style="text-align: center;">
+		<thead>
+			<tr>
+				<th width="50">ID</th>
+				<th width="150">用户名</th>
+				<th width="150">论坛名</th>
+				<th width="50">状态</th>
+				<th width="150">权限组</th>
+				<th width="150">最后登录</th>
+				<th width="50">登录次数</th>
+				<th width="150">操作</th>
+			</tr>
+		</thead>
+		{volist name="listData" id="list"}
+		<tr>
+			<td>{$list.id}</td>
+			<td>{$list.username}</td>
+			<td>{$list.bbsname}</td>
+			<td>
+				{if $list.status eq 0}
+				锁定
+				{else /}
+				正常
+				{/if}
+			</td>
+			<td>
+				{$list.authname}
+			</td>
+			<td>{$list.last_login_time|date="Y-m-d H:i:s",###}</td>
+			<td>{$list.login_num}</td>
+			<td>
+				<div class="layui-btn-group">
+				  <button class="layui-btn layui-btn-xs" title="编辑" onclick="edit({$list.id});">
+				  	<i class="layui-icon" style="font-size:12px;">&#xe642;</i>
+				  </button>
+				  <button class="layui-btn layui-btn-xs layui-btn-danger" title="删除" onclick="del({$list.id});">
+				  	<i class="layui-icon">&#xe640;</i>
+				  </button>
+				</div>
+			</td>
+		</tr>
+		{/volist}
+	</table>
+	<script type="text/javascript">
+		// 编辑
+		function edit(id){
+			var url 	=	"{:url('admin/user/newadmin')}";
+			var box_url 	=	url + '/id/' + id;
+
+
+			$.ajax({
+				url:url,
+				type:'get',
+				data:{'id':id},
+				success:function(data){
+					var code 	=	data['code'];
+					
+					if(code == undefined){
+						box_load(box_url);
+					}else{
+						msgAlert(data['code'],data['msg'],data['code']);
+					}
+
+				}
+			});
+
+		}
+
+
+		// 删除
+		function del(id){
+			var url 	=	"{:url('admin/user/deladmin')}";
+
+			$.ajax({
+				url:url,
+				type:'get',
+				data:{'id':id},
+				success:function(data){
+					msgAlert(data['code'],data['msg'],data['code']);
+				}
+			});
+		}
+	</script>
+</div>

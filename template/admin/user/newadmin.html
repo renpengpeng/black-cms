@@ -1,0 +1,109 @@
+<div class="layui-body">
+	<div class="box-title">
+		{$boxTitle}
+	</div>
+	<form class="layui-form layui-form-pane" action="{:url('admin/user/newadmin_out')}" method="post">
+		<input type="hidden" name="id" value="{$message.id}">
+
+		<!-- 用户名 -->
+		<div class="layui-form-item">
+    		<label class="layui-form-label">用户名</label>
+    		<div class="layui-input-inline">
+      			<input type="text" name="username" required  lay-verify="required" placeholder="(必填) 用户名" autocomplete="off" class="layui-input" value="{$message.username}">
+    		</div>
+    		<div class="layui-form-mid layui-word-aux">只能为a-zA-Z0-9</div>
+  		</div>
+
+  		<!-- 昵称 -->
+  		<div class="layui-form-item">
+    		<label class="layui-form-label">昵称</label>
+    		<div class="layui-input-inline">
+      			<input type="text" name="bbsname" required  lay-verify="required" placeholder="(必填) 昵称" autocomplete="off" class="layui-input" value="{$message.bbsname}">
+    		</div>
+    		<div class="layui-form-mid layui-word-aux">规范输入昵称</div>
+  		</div>
+
+  		<!-- 密码 -->
+  		<div class="layui-form-item">
+    		<label class="layui-form-label">密码</label>
+    		<div class="layui-input-inline">
+      			<input type="password" name="password" placeholder="留空则不修改" autocomplete="off" class="layui-input">
+    		</div>
+    		<div class="layui-form-mid layui-word-aux">添加新会员时 必填</div>
+  		</div>
+
+  		<!-- 状态 -->
+  		<div class="layui-form-item">
+    		<label class="layui-form-label">状态</label>
+    		<div class="layui-input-block">
+      			<input type="radio" name="status" value="1" title="正常">
+      			<input type="radio" name="status" value="0" title="锁定" checked>
+    		</div>
+  		</div>
+
+  		<!-- 权限 -->
+  		<div class="layui-form-item">
+    		<label class="layui-form-label">权限</label>
+    		<div class="layui-input-block">
+      			{volist name="authData" id="auth"}
+      			<input type="radio" name="auth" value="{$auth.id}" title="{$auth.authname}">
+      			{/volist}
+    		</div>
+  		</div>
+
+  		<!-- 按钮 -->
+  		<div class="layui-form-item">
+    		<div class="layui-input-block">
+      			<button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+     			 <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+   			 </div>
+ 		</div>
+	</form>
+
+	<script>
+	layui.use('form', function(){
+	  var form 		= 	layui.form;
+	  var status 	=	"{$message.status}";
+	  var auth 		=	"{$message.auth}";
+
+	  if(status.length > 0){
+	  	$(':radio[name="status"]').each(function(){
+		  	var val 	=	$(this).val();
+		  	if(status == val){
+		  		$(this).attr('checked',true);
+		  	}
+	  	});
+	  }
+
+	  if(auth.length > 0){
+	  	$(':radio[name="auth"]').each(function(){
+		  	var val 	=	$(this).val();
+		  	if(auth == val){
+		  		$(this).attr('checked',true);
+		  	}
+	  	});
+	  }
+	  
+
+	  form.render();
+	  
+	  //监听提交
+	  form.on('submit(formDemo)', function(data){
+	    var fie 	=	data.field;
+	    var action 	=	data.form.action;
+	    var method 	=	data.form.method;
+
+	    $.ajax({
+	    	url:action,
+	    	type:method,
+	    	data:fie,
+	    	success:function(data){
+	    		msgAlert(data['code'],data['msg'],data['code']);
+	    	}
+	    });
+
+	    return false;
+	  });
+	});
+</script>
+</div>

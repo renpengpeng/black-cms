@@ -1,0 +1,82 @@
+<div class="layui-body">
+	<div class="box-title">
+		{$boxTitle}
+	</div>
+	
+	<table class="layui-table " style="text-align: center;">
+		<thead>
+			<tr>
+				<th width="50">ID</th>
+				<th width="50">ICO</th>
+				<th width="150">标题</th>
+				<th width="50">链接</th>
+				<th width="50">点击次数</th>
+				<th width="150">添加时间</th>
+				<th width="100">添加者</th>
+				<th width="150">操作</th>
+			</tr>
+		</thead>
+		{volist name="listData" id="list"}
+			<tr>
+				<td>{$list.id}</td>
+				<td>
+					{if $list.icon neq null}
+					<img src="{$list.icon}" width="50" height="50">
+					{else /}
+					<img src="/static/admin/img/notitlepic.png" width="50" height="50">
+					{/if}
+				</td>
+				<td>{$list.title}</td>
+				<td>{$list.href}</td>
+				<td>{$list.click}</td>
+				<td>{$list.addtime|date="Y-m-d H:i:s",###}</td>
+				<td>{$list.addusername}</td>
+				<td>
+					<button class="layui-btn layui-btn-xs" title="编辑" onclick="edit({$list.id});">
+				  		<i class="layui-icon" style="font-size:12px;">&#xe642;</i>
+				  	</button>
+				  	<button class="layui-btn layui-btn-xs layui-btn-danger" title="删除" onclick="del({$list.id});">
+				  		<i class="layui-icon">&#xe640;</i>
+				  	</button>
+				</td>
+			</tr>
+		{/volist}
+	</table>
+	{$pageData->render()}
+	<script type="text/javascript">
+
+		
+
+		// 编辑
+		function edit(id){
+			var url 	=	"{:url('admin/link/newlink')}" + '/id/' + id;
+
+			$.ajax({
+				url:url,
+				type:'get',
+				success:function(data){
+					code 	=	data['code'];
+					if(code == undefined){
+						box_load(url);
+					}else{
+						msgAlert(data['code'],data['msg'],data['code']);
+					}
+				}
+			});
+		}
+
+		// 删除
+		function del(id){
+			var url 	=	"{:url('admin/link/dellink')}";
+
+			$.ajax({
+				url:url,
+				type:'get',
+				data:{'id':id},
+				success:function(data){
+					msgAlert(data['code'],data['msg'],data['code']);
+				}
+			});
+		}
+	</script>
+</div>

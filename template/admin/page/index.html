@@ -1,0 +1,127 @@
+<div class="layui-body">
+	<div class="box-title">
+	  页面列表 - ({$boxTitle})
+	</div>
+ 		<button class="layui-btn layui-btn-sm layui-btn-primary all" onclick="pageStatus('all');">所有的</button>
+		<button class="layui-btn layui-btn-sm layui-btn-primary where" onclick="pageStatus(0);">未审核</button>
+		<button class="layui-btn layui-btn-sm layui-btn-primary where" onclick="pageStatus(1);">已发布</button>
+		<button class="layui-btn layui-btn-sm layui-btn-primary where" onclick="pageStatus(2);">草稿</button>
+		<button class="layui-btn layui-btn-sm layui-btn-primary where" onclick="pageStatus(3);">回收站</button>
+	<table class="layui-table" style="text-align: center;">
+		<thead>
+			<tr lay-skin="line" style="text-align: center;">
+
+				<th width="40" style="text-align: center;">ID</th>
+				<th width="60" style="overflow: hidden;">标题图片</th>
+				<th style="text-align: center;min-width: 50%;">标题</th>
+				<th width="150" style="text-align: center;">添加时间</th>
+				<th width="50" style="text-align: center;">阅读量</th>
+				<th width="50" style="text-align: center;">状态</th>
+								<th width="30" style="text-align: center;">密码</th>
+				<th width="100" style="text-align: center;">操作</th>
+			</tr>
+		</thead>
+		{volist name="listData" id="list"}
+		<tr>
+			
+			<td>{$list.id}</td>
+			<td>
+				{if $list.titlepic neq null}
+				<img src="{$list.titlepic}" width="50" height="50">
+				{else /}
+				<img src="/static/admin/img/notitlepic.png" width="50" height="50">
+				{/if}
+			</td>
+			<td>{$list.title}</td>
+			<td>{$list.addtime|date="Y-m-d H:i:s",###}</td>
+			<td>{$list.view}</td>
+			<td>
+				{if $list.status eq 0}
+				未审核
+				{elseif $list.status eq 1}
+				正常
+				{elseif $list.status eq 2}
+				草稿
+				{elseif $list.status eq 3}
+				回收站
+				{else /}
+				未知
+				{/if}
+			</td>
+			<td>
+				{if $list.password neq null}
+					<img src="/static/admin/img/pagelockno.png" width="20" height="20">
+				{else /}
+					<img src="/static/admin/img/pagelockyes.png" width="20" height="20">
+				{/if}
+			</td>
+			<td>
+				<div class="layui-btn-group">
+				  <button class="layui-btn layui-btn-xs" title="编辑" onclick="edit('{:url("admin/page/newpage",["id"=>$list.id])}');">
+				  	<i class="layui-icon" style="font-size:12px;">&#xe642;</i>
+				  </button>
+				  <button class="layui-btn layui-btn-xs layui-btn-danger" title="删除" onclick="del({$list.id});">
+				  	<i class="layui-icon">&#xe640;</i>
+				  </button>
+				  <button class="layui-btn layui-btn-xs layui-btn-normal" title="预览" onclick="look('dd')}');">
+				  	<i class="layui-icon">&#xe63b;</i>
+				  </button>
+				</div>
+			</td>
+		</tr>
+		{/volist}
+	</table>
+	{$pageData->render()}
+	<script type="text/javascript">
+		$(function(){
+			var status 	=	"{$status}";
+			if(status == 'all'){
+				$('.all').addClass('borders');
+			}else{
+				$('.where').eq(status).addClass('borders');
+			}
+		});
+		// 切换状态
+		function pageStatus(status){
+			var url 	=	"{:url('admin/announce/index')}";
+			if(status 	==	'all'){
+				url 	=	url + '?status=&type=all';
+				box_load(url);
+			}else{
+				url 	=	url + '?status=' + status;
+				box_load(url);
+			}
+		}
+		/*
+		  * 编辑
+		*/
+		function edit(url){
+		  // 访问  如果没有错误 则进入
+		  $.ajax({
+		    url:url,
+		    success:function(data){
+		      if(data['code'] == 0){
+		        msgAlert(0,data['msg'],0);
+		        return false;
+		      }else{
+		        box_load(url);
+		      }
+		    }
+		  });
+		}
+		/*
+			*	删除
+		*/
+		function del(id){
+			var url 	=	"{:url('admin/page/del')}";
+			$.ajax({
+				url:url,
+				type:'post',
+				data:{'id':id},
+				success:function(data){
+					msgAlert(data['code'],data['msg'],data['code']);
+				}
+			});
+		}
+	</script>
+</div>

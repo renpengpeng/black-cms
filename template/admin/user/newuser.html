@@ -1,0 +1,277 @@
+<div class="layui-body">
+	<div class="box-title">
+		{$boxTitle}
+	</div>
+	<form class="layui-form layui-form-pane" action="{:url('admin/user/newuser_out')}" method="post">
+		<input type="hidden" name="id" value="{$message.id}">
+
+		 <!-- 用户头像 -->
+	      <div class="layui-form-item">
+	       	  <label class="layui-form-label">用户头像</label>
+	        	<div class="layui-input-block">
+	        		<div id="user-pic">
+	        			{if condition="empty($message.pic)"}
+	        			请选择
+	        			{else /}
+	        			<img src="{$message.pic}">
+	        			{/if}
+	        		</div>
+	          		<input type="text" name="pic" placeholder="(可选) 点击选择用户头像" autocomplete="off" class="layui-input" value="{$message.pic}" style="opacity: 0;height: 1px;" value="{$message.pic}">
+	          		<input type="file" name="blackFile" style="position: absolute;top:0;left: 0;width: 100%;height: 100%;opacity: 0;" id="blackFile" readonly>
+	        	</div>
+	      </div>
+
+	      
+		<!-- 用户名 -->
+		 <div class="layui-form-item">
+		 	 <label class="layui-form-label">用户名</label>
+		 	 	<div class="layui-input-inline">
+		 	 		 <input type="text" name="username" required  lay-verify="required" placeholder="(必填) 用户名" autocomplete="off" class="layui-input" value="{$message.username}">
+		 	 	</div>
+		 	 	<div class="layui-form-mid layui-word-aux">只能为英文字母或者数字{$setting.username_min_len}-{$setting.username_max_len}位</div>
+		 </div>
+
+		 <!-- 论坛名称 -->
+		 <div class="layui-form-item">
+		 	 <label class="layui-form-label">论坛名称</label>
+		 	 	<div class="layui-input-inline">
+		 	 		 <input type="text" name="bbsname" required  lay-verify="required" placeholder="(必填) 用户论坛名称" autocomplete="off" class="layui-input" value="{$message.bbsname}">
+		 	 	</div>
+		 	 	<div class="layui-form-mid layui-word-aux">可中文 英文 数字{$setting.bbsname_min_len}-{$setting.bbsname_max_len}位</div>
+		 </div>
+
+		 <!-- 密码 -->
+		 <div class="layui-form-item">
+		 	 <label class="layui-form-label">密码</label>
+		 	 	<div class="layui-input-inline">
+		 	 		 <input type="text" name="password" placeholder="(必填) 用户密码" autocomplete="off" class="layui-input">
+		 	 	</div>
+		 	 	<div class="layui-form-mid layui-word-aux">只能输入英文或者数字 {$setting.password_min_len}-{$setting.password_max_len}位  * 留空则不修改</div>
+		 </div>
+
+		  <!-- 性别 -->
+		 <div class="layui-form-item">
+		 	 <label class="layui-form-label">性别</label>
+		 	 	<div class="layui-input-block">
+		 	 		<input type="radio" name="sex" value="0" title="保密" checked>
+      				<input type="radio" name="sex" value="1" title="男" >
+      				<input type="radio" name="sex" value="2" title="女" >
+		 	 	</div>
+		 </div>
+
+		 <!-- 邮箱 -->
+		 <div class="layui-form-item">
+		 	 <label class="layui-form-label">邮箱</label>
+		 	 	<div class="layui-input-inline">
+		 	 		 <input type="email" name="email"  placeholder="(可选) 用户邮箱" autocomplete="off" class="layui-input" value="{$message.email}">
+		 	 	</div>
+		 	 	<div class="layui-form-mid layui-word-aux">请正确输入邮箱</div>
+		 </div>
+
+		  <!-- 邮箱验证 -->
+		 <div class="layui-form-item">
+		 	 <label class="layui-form-label">邮箱验证</label>
+		 	 	<div class="layui-input-block">
+		 	 		<input type="radio" name="email_check" value="1" title="已验证">
+      				<input type="radio" name="email_check" value="0" title="未验证" checked>
+		 	 	</div>
+		 </div>
+
+		 <!-- 手机 -->
+		  <div class="layui-form-item">
+		 	 <label class="layui-form-label">手机</label>
+		 	 	<div class="layui-input-inline">
+		 	 		 <input type="tel" name="phone"  placeholder="(可选) 手机号码" autocomplete="off" class="layui-input" value="{$message.phone}">
+		 	 	</div>
+		 	 	<div class="layui-form-mid layui-word-aux">请正确输入手机号</div>
+		 </div>
+
+		 <!-- 手机验证 -->
+		 <div class="layui-form-item">
+		 	 <label class="layui-form-label">手机验证</label>
+		 	 	<div class="layui-input-block">
+		 	 		<input type="radio" name="phone_check" value="1" title="已验证">
+      				<input type="radio" name="phone_check" value="0" title="未验证" checked>
+		 	 	</div>
+		 </div>
+
+		 <!-- QQ -->
+		  <div class="layui-form-item">
+		 	 <label class="layui-form-label">QQ</label>
+		 	 	<div class="layui-input-inline">
+		 	 		 <input type="text" name="qq" placeholder="(可选) QQ号码" autocomplete="off" class="layui-input" value="{$message.qq}">
+		 	 	</div>
+		 	 	<div class="layui-form-mid layui-word-aux">请正确输入QQ号</div>
+		 </div>
+
+		 <!-- 微信 -->
+		  <div class="layui-form-item">
+		 	 <label class="layui-form-label">微信</label>
+		 	 	<div class="layui-input-inline">
+		 	 		 <input type="text" name="wx" placeholder="(可选) 微信号码" autocomplete="off" class="layui-input" value="{$message.wx}">
+		 	 	</div>
+		 	 	<div class="layui-form-mid layui-word-aux">请正确输入微信号</div>
+		 </div>
+
+		 <!-- 用户积分 -->
+		  <div class="layui-form-item">
+		 	 <label class="layui-form-label">用户积分</label>
+		 	 	<div class="layui-input-inline">
+		 	 		 <input type="number" name="point" placeholder="(可选) 用户积分" autocomplete="off" class="layui-input" value="{$message.point}">
+		 	 	</div>
+		 	 	<div class="layui-form-mid layui-word-aux">只能输入数字</div>
+		 </div>
+
+		  <!-- 个人主页 -->
+		  <div class="layui-form-item">
+		 	 <label class="layui-form-label">个人主页</label>
+		 	 	<div class="layui-input-inline">
+		 	 		 <input type="url" name="point" placeholder="(可选) 用户个人主页" autocomplete="off" class="layui-input" value="{$message.point}">
+		 	 	</div>
+		 	 	<div class="layui-form-mid layui-word-aux">务必加http[s]://</div>
+		 </div>
+
+		 <!-- 个性签名 -->
+		 <div class="layui-form-item layui-form-text">
+    			<label class="layui-form-label">个性签名</label>
+    			<div class="layui-input-block">
+      				<textarea name="autograth" placeholder="(可选) 个性签名" class="layui-textarea">{$message.autograth}</textarea>
+    			</div>
+  		</div>
+
+  		<!-- 用户状态 -->
+  		 <div class="layui-form-item">
+		 	 <label class="layui-form-label">用户状态</label>
+		 	 	<div class="layui-input-block">
+		 	 		<input type="radio" name="status" value="1" title="正常" checked>
+      				<input type="radio" name="status" value="0" title="锁定">
+		 	 	</div>
+		 </div>
+
+		 <!-- 提交btn -->
+		 <div class="layui-form-item">
+    		<div class="layui-input-block">
+      			<button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+      			<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    		</div>
+  		</div>
+	</form>
+
+	<script>
+	//Demo
+	layui.use('form', function(){
+	  var form = layui.form;
+
+	  // 接收初始化数据
+	  var sex  			= "{$message.sex}";
+	  var emailCheck 	= "{$message.email_check}";
+	  var phoneCheck 	= "{$message.phone_check}";
+	  var status 		= "{$message.status}";
+
+	  if(sex != ''){
+	  	  $('input[name="sex"]').removeAttr('checked');
+	  	  $('input[name="sex"]').each(function(){
+	  	  	  var val 	=	$(this).val();
+	  	  	  if(val == sex){
+	  	  	  	 $(this).attr('checked',true);
+	  	  	  }
+	  	  });
+	  }
+
+	 if(emailCheck != ''){
+	  	  $('input[name="email_check"]').removeAttr('checked');
+	  	  $('input[name="email_check"]').each(function(){
+	  	  	  var val 	=	$(this).val();
+	  	  	  if(val == emailCheck){
+	  	  	  	 $(this).attr('checked',true);
+	  	  	  }
+	  	  });
+	  }
+
+	  if(phoneCheck != ''){
+	  	  $('input[name="phone_check"]').removeAttr('checked');
+	  	  $('input[name="phone_check"]').each(function(){
+	  	  	  var val 	=	$(this).val();
+	  	  	  if(val == phoneCheck){
+	  	  	  	 $(this).attr('checked',true);
+	  	  	  }
+	  	  });
+	  }
+
+	   if(status != ''){
+	  	  $('input[name="status"]').removeAttr('checked');
+	  	  $('input[name="status"]').each(function(){
+	  	  	  var val 	=	$(this).val();
+	  	  	  if(val == status){
+	  	  	  	 $(this).attr('checked',true);
+	  	  	  }
+	  	  });
+	  }
+
+
+	  form.render();
+	  
+	  //监听提交
+	  form.on('submit(formDemo)', function(data){
+	    var fie 	=	data.field;
+	    var action 	=	data.form.action;
+	    var method 	=	data.form.method;
+
+	    $.ajax({
+	    	url:action,
+	    	type:method,
+	    	data:fie,
+	    	success:function(cdata){
+	    		msgAlert(cdata['code'],cdata['msg'],cdata['code']);
+	    	}
+	    });
+
+	    return false;
+	  });
+	});
+
+	// 上传图片
+  $(document).delegate('input[name="blackFile"]','change',function(){
+    var url       = "{:url('index/upload/upload')}";
+    var files       = $("#blackFile").prop('files');
+
+    if(files.length <= 0){
+      msgAlert(0,'没有选择文件哦！',0);
+      return false;
+    }
+
+    if(files.length > 1){
+      msgAlert(0,'不能上传多个文件',0);
+      return false;
+    } 
+
+    var fileProject     =  new FormData();
+    fileProject.append("blackFile",files[0]);
+
+    $(this).replaceWith('<input type="file" name="blackFile" style="position: absolute;top:0px;height: 100%;width: 100%;opacity: 0;cursor: pointer;" title="点击选择文件" id="blackFile" >');
+
+
+    $.ajax({
+      url:url,
+      type:'post',
+      data:fileProject,
+      processData : false,
+      contentType : false,
+      dataType: "json",
+      success:function(data){
+        var derrno  = data['errno'];
+        var ddata   = data['data'];
+
+        if(derrno == 0){
+          msgAlert(1,'上传图片成功',0);
+          $('input[name="pic"]').val(ddata[0]);
+          $('#user-pic').html("<img src='" + ddata[0] + "'>");
+        }else{
+          msgAlert(0,'上传图片失败',0);
+        }
+      }
+    });
+  });
+
+</script>
+</div>

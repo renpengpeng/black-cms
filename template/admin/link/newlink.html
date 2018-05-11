@@ -1,0 +1,68 @@
+<div class="layui-body">
+	<div class="box-title">
+		{$boxTitle}
+	</div>
+	<form class="layui-form layui-form-pane" action="{:url('admin/link/newlink_out')}" method="post">
+		<input type="hidden" name="id" value="{$message.id}">
+
+		<!-- 标题 -->
+		<div class="layui-form-item">
+			<label class="layui-form-label">链接名称</label>
+   			<div class="layui-input-inline">
+      			<input type="text" name="title" required lay-verify="required" placeholder="(必填) 标题" autocomplete="off" class="layui-input" value="{$message.title}">
+    		</div>
+    		<div class="layui-form-mid layui-word-aux">必填</div>
+		</div>
+
+		<!-- icon -->
+		<div class="layui-form-item">
+			<label class="layui-form-label">图像地址</label>
+   			<div class="layui-input-inline">
+      			<input type="text" name="icon" placeholder="(可选) 图像地址" autocomplete="off" class="layui-input" value="{$message.icon}">
+    		</div>
+    		<div class="layui-form-mid layui-word-aux">输入图像地址</div>
+		</div>
+
+		<!-- 链接地址 -->
+		<div class="layui-form-item">
+			<label class="layui-form-label">链接地址</label>
+   			<div class="layui-input-inline">
+      			<input type="text" name="href" required lay-verify="required" placeholder="(必填) 链接地址" autocomplete="off" class="layui-input" value="{$message.href}">
+    		</div>
+    		<div class="layui-form-mid layui-word-aux">务必要加http[s]://</div>
+		</div>
+
+		<!-- 按钮 -->
+		<div class="layui-form-item">
+   			 <div class="layui-input-block">
+      			<button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+      			<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    		</div>
+  		</div>
+	</form>
+	<script type="text/javascript">
+		layui.use('form', function(){
+		  var form = layui.form;
+		  form.render();
+
+
+		  //监听提交
+		  form.on('submit(formDemo)', function(data){
+		    var fie 	=	data.field;
+		    var action 	=	data.form.action;
+		    var method 	=	data.form.method;
+
+		    $.ajax({
+		    	url:action,
+		    	type:method,
+		    	data:fie,
+		    	success:function(da){
+		    		msgAlert(da['code'],da['msg'],da['code']);
+		    	}
+		    });
+
+		    return false;
+		  });
+		});
+	</script>
+</div>

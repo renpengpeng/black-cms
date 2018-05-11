@@ -1,0 +1,93 @@
+<div class="layui-body">
+	<div class="box-title">
+		{$boxTitle}
+	</div>
+	<table class="layui-table tableCenter" style="text-align: center;">
+		<thead>
+			<tr>
+				<th width="50">ID</th>
+				<th width="150">用户头像</th>
+				<th width="150">用户名</th>
+				<th width="150">论坛名称</th>
+				<th width="50">积分</th>
+				<th width="150">邮箱</th>
+				<th width="150">手机</th>
+				<th width="150">注册时间</th>
+				<th width="150">上次登录</th>
+				<th width="150">状态</th>
+				<th width="150">操作</th>
+			</tr>
+		</thead>
+		{volist name="listData" id="list"}
+		<tr>
+			<td>{$list.id}</td>
+			<td>
+				{if condition="empty($list.pic)"}
+					<img src="/static/admin/img/notitlepic.png" width="50" height="50">
+				{else /}
+					<img src="{$list.pic}" width="50" height="50">
+				{/if}
+			</td>
+			<td>{$list.username}</td>
+			<td>{$list.bbsname}</td>
+			<td>{$list.point}</td>
+			<td>{$list.email}</td>
+			<td>{$list.phone}</td>
+			<td>{$list.reg_time}</td>
+			<td>{$list.last_login_time}</td>
+			<td>
+				{if $list.status eq 0}
+				锁定
+				{else /}
+				正常
+				{/if}
+			</td>
+			<td>
+				<div class="layui-btn-group">
+				  <button class="layui-btn layui-btn-xs" title="编辑" onclick="edit({$list.id});">
+				  	<i class="layui-icon" style="font-size:12px;">&#xe642;</i>
+				  </button>
+				  <button class="layui-btn layui-btn-xs layui-btn-danger" title="删除" onclick="del({$list.id});">
+				  	<i class="layui-icon">&#xe640;</i>
+				  </button>
+				</div>
+			</td>
+		</tr>
+		{/volist}
+	</table>
+	<script type="text/javascript">
+		// 编辑
+		function edit(id){
+			var url 		=	"{:url('admin/user/newuser')}";
+			var box_url 	=	url + '/id/' + id;
+			$.ajax({
+				url:url,
+				type:'get',
+				data:{'id':id},
+				success:function(data){
+					var code 	=	data['code'];
+					console.log(code);
+					if(code != undefined){
+						msgAlert(code,data['msg'],code);
+					}else{
+						box_load(box_url);
+					}
+				}
+			});
+		}
+
+		// 删除
+		function del(id){
+			var url 	=	"{:url('admin/user/deluser')}";
+
+			$.ajax({
+				url:url,
+				type:'get',
+				data:{'id':id},
+				success:function(data){
+					msgAlert(data['code'],data['msg'],data['code']);
+				}
+			});
+		}
+	</script>
+</div>
